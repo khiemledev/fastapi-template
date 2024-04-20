@@ -1,0 +1,28 @@
+version: '3'
+services:
+  ekyc-core-api:
+    container_name: ekyc-core-api
+    restart: always
+    build: .
+    volumes:
+      - ./.env:/app/.env
+    ports:
+      - '8080:8080' # Change 8080 to your port
+    env_file:
+      - ./.env
+    networks:
+      ekyc-core-network:
+        aliases:
+          - ekyc-core-network
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0'] # Change this to your GPU ID
+              capabilities: [gpu]
+
+networks:
+  ekyc-core-network:
+    external: true
