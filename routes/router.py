@@ -1,11 +1,27 @@
 from fastapi import APIRouter
 
-from handler.face import faceRouter
+from handler.face import FaceHandler
 
 
-def setup_router() -> APIRouter:
+def endpoint():
+    return {}
+
+
+def setup_router(face_handler: FaceHandler) -> APIRouter:
     router = APIRouter()
 
-    router.include_router(faceRouter, prefix="/face", tags=["Face"])
+    face_router = APIRouter()
+    face_router.add_api_route(
+        "/detect",
+        endpoint=face_handler.face_detect_handler,
+        methods=["POST"],
+    )
+    face_router.add_api_route(
+        "/recognize",
+        endpoint=face_handler.face_recognize_handler,
+        methods=["POST"],
+    )
+
+    router.include_router(face_router, prefix="/face", tags=["Face"])
 
     return router

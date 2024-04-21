@@ -3,7 +3,9 @@ services:
   ekyc-core-api:
     container_name: ekyc-core-api
     restart: always
-    build: .
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
     volumes:
       - ./.env:/app/.env
     ports:

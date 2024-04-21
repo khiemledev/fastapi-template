@@ -4,18 +4,19 @@ from pathlib import Path
 
 from loguru import logger
 
-from .config import LoggerConfig
+from .config.config import LoggerConfig
 
 
 def get_logger():
+    """Return logger object."""
     return logger
 
 
 def setup_logger(
     name: str = "app",
-    logdir: Path | str = Path(str(LoggerConfig.LogDir)),
+    logdir: Path | str = Path(LoggerConfig.LogDir.value),
     log_level: int = logging.INFO,
-    backtrace: bool = bool(LoggerConfig.BackTrace),
+    backtrace: bool = LoggerConfig.BackTrace.value,
 ):
     """Setup a logger with file and stream handlers.
 
@@ -45,16 +46,16 @@ def setup_logger(
         sys.stdout,
         level=log_level,
         backtrace=backtrace,
-        diagnose=True,
+        diagnose=False,
     )
 
     logger.add(
         path.with_suffix(".log"),
         level=log_level,
-        rotation=int(LoggerConfig.MaxBytes),
-        retention=int(LoggerConfig.MaxBackupCount),
+        rotation=int(LoggerConfig.MaxBytes.value),
+        retention=int(LoggerConfig.MaxBackupCount.value),
         backtrace=backtrace,
-        diagnose=True,
+        diagnose=False,
         serialize=False,  # Enable this to log in json format
     )
 

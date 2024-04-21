@@ -9,9 +9,8 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
 from constant.app import Mode
-from routes.router import setup_router
-from schemas.api import APIResponse
-from util.config import Config
+from schema.api import APIResponse
+from util.config.config import Config
 from util.logger import get_logger, setup_logger
 
 dotenv.load_dotenv()
@@ -23,14 +22,11 @@ logger = get_logger()
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting up")
-    logger.info("Start application in %s mode" % str(Config.Mode))
+    logger.info("Start application in %s mode" % str(Config.Mode.value))
 
     yield
     # Shutdown
     logger.info("Shutting down")
-
-
-print(str(Config.SwaggerURL))
 
 
 def setup_app() -> FastAPI:
@@ -59,10 +55,12 @@ def setup_app() -> FastAPI:
         # Handle 500 exception
         logger.exception(exc)
         return JSONResponse(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=http.HTTPStatus.INTERNAL_SERVER_ERROR.value,
             content=APIResponse(
                 status=http.HTTPStatus.INTERNAL_SERVER_ERROR.value,
-            ),
+                message=http.HTTPStatus.INTERNAL_SERVER_ERROR.name,
+                data=None,
+            ).model_dump(),
         )
 
     @app.exception_handler(ValidationError)
@@ -72,10 +70,13 @@ def setup_app() -> FastAPI:
         err: RequestValidationError | ValidationError,
     ):
         logger.exception(err)
-        return APIResponse(
-            status=http.HTTPStatus.BAD_REQUEST.value,
-            message=str(http.HTTPStatus.BAD_REQUEST),
-            data=err.errors(),
+        return JSONResponse(
+            status_code=http.HTTPStatus.INTERNAL_SERVER_ERROR.value,
+            content=APIResponse(
+                status=http.HTTPStatus.BAD_REQUEST.value,
+                message=str(http.HTTPStatus.BAD_REQUEST),
+                data=err.errors(),
+            ).model_dump(),
         )
 
     @app.get("/")
@@ -91,8 +92,5 @@ def setup_app() -> FastAPI:
             status=http.HTTPStatus.OK.value,
             message="Running (Healthy)",
         )
-
-    router = setup_router()
-    app.include_router(router)
 
     return app
