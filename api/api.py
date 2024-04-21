@@ -12,9 +12,10 @@ from constant.app import Mode
 from routes.router import setup_router
 from schemas.api import APIResponse
 from util.config import Config
-from util.logger import get_logger
+from util.logger import get_logger, setup_logger
 
 dotenv.load_dotenv()
+setup_logger()
 logger = get_logger()
 
 
@@ -22,11 +23,14 @@ logger = get_logger()
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting up")
-    logger.info("Start application in %s mode" % Config.Mode)
+    logger.info("Start application in %s mode" % str(Config.Mode))
 
     yield
     # Shutdown
     logger.info("Shutting down")
+
+
+print(str(Config.SwaggerURL))
 
 
 def setup_app() -> FastAPI:

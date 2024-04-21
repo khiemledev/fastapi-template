@@ -13,9 +13,9 @@ def get_logger():
 
 def setup_logger(
     name: str = "app",
-    logdir: Path | str = Path(LoggerConfig.LogDir),
+    logdir: Path | str = Path(str(LoggerConfig.LogDir)),
     log_level: int = logging.INFO,
-    backtrace: bool = LoggerConfig.BackTrace,
+    backtrace: bool = bool(LoggerConfig.BackTrace),
 ):
     """Setup a logger with file and stream handlers.
 
@@ -51,8 +51,8 @@ def setup_logger(
     logger.add(
         path.with_suffix(".log"),
         level=log_level,
-        rotation=LoggerConfig.MaxBytes,
-        retention=LoggerConfig.MaxBackupCount,
+        rotation=int(LoggerConfig.MaxBytes),
+        retention=int(LoggerConfig.MaxBackupCount),
         backtrace=backtrace,
         diagnose=True,
         serialize=False,  # Enable this to log in json format
