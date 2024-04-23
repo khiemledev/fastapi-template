@@ -16,11 +16,6 @@ def setup_router(face_handler: FaceHandler) -> APIRouter:
         endpoint=face_handler.face_detect_handler,
         methods=["POST"],
     )
-    face_router.add_api_route(
-        "/recognize",
-        endpoint=face_handler.face_recognize_handler,
-        methods=["POST"],
-    )
 
     router.include_router(face_router, prefix="/face", tags=["Face"])
 

@@ -9,3 +9,9 @@ class FaceDetectionResult(DetectionResult):
 
     class Config:
         arbitrary_types_allowed = True
+
+    def to_dict(self) -> dict:
+        return {
+            **super().to_dict(),
+            "faces": self.faces,
+        }

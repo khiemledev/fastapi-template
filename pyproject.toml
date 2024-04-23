@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "ekyc-core-api"
-version = "0.0.1"
-description = "eKYC Core API"
+version = "0.1.0"
+description = "eKYC Core API Project"
 authors = ["Khiem Le <theinnocentman1@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 pydantic = "^2.7.0"
 fastapi = "^0.110.2"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
@@ -16,7 +16,6 @@ opencv-python = "^4.9.0.80"
 numpy = "^1.26.4"
 ultralytics = "^8.2.2"
 python-multipart = "^0.0.9"
-
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"
