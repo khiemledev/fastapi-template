@@ -17,6 +17,8 @@ def setup_logger(
     logdir: Path | str = Path(LoggerConfig.LogDir.value),
     log_level: int = logging.INFO,
     backtrace: bool = LoggerConfig.BackTrace.value,
+    serialize: bool = LoggerConfig.SerializeJSON.value,
+    diagnose: bool = LoggerConfig.Diagnose.value,
 ):
     """Setup a logger with file and stream handlers.
 
@@ -29,6 +31,10 @@ def setup_logger(
         log_level (int, optional): log level. Defaults to logging.INFO.
 
         backtrace (bool, optional): enable backtrace. Defaults to LoggerConfig.BackTrace.
+
+        serialize (bool, optional): enable serialize. Defaults to LoggerConfig.SerializeJSON.
+
+        diagnose (bool, optional): enable diagnose. Defaults to LoggerConfig.Diagnose.
 
     Returns:
         logging.Logger: logger object
@@ -46,7 +52,7 @@ def setup_logger(
         sys.stdout,
         level=log_level,
         backtrace=backtrace,
-        diagnose=False,
+        diagnose=diagnose,
     )
 
     logger.add(
@@ -55,8 +61,8 @@ def setup_logger(
         rotation=int(LoggerConfig.MaxBytes.value),
         retention=int(LoggerConfig.MaxBackupCount.value),
         backtrace=backtrace,
-        diagnose=False,
-        serialize=False,  # Enable this to log in json format
+        diagnose=diagnose,
+        serialize=serialize,  # Enable this to log in json format
     )
 
     return logger

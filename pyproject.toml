@@ -16,6 +16,7 @@ opencv-python = "^4.9.0.80"
 numpy = "^1.26.4"
 ultralytics = "^8.2.2"
 python-multipart = "^0.0.9"
+shortuuid = "^1.0.13"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7.0"

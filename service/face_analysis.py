@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 from PIL import Image
 
@@ -5,6 +7,9 @@ from ai_model.detector.base_detector import BaseDetector
 from ai_model.extractor.base_extractor import BaseExtractor
 from schema.face import FaceDetectionResult
 from util.config.ai_model import YOLOFaceConfig
+from util.logger import get_logger
+
+logger = get_logger()
 
 
 class FaceAnalysisService:
@@ -23,22 +28,44 @@ class FaceAnalysisService:
     def detect_face(
         self,
         images: list[Image.Image | np.ndarray] | np.ndarray,
+        trace_id: Optional[str] = None,
     ) -> list[FaceDetectionResult]:
         """Detect face within images
 
         Args:
             images (list[Image.Image | np.ndarray] | np.ndarray): list of images
+            trace_id (str, optional): tracing id used for logging
 
         Returns:
             list[FaceDetectionResult]: result of face detection
         """  # noqa: E501
+        log_ctx = logger.bind(trace_id=trace_id)
+
+        log_ctx.info(
+            (
+                "detecting faces in %d images, crop_faces: %s, "
+                "expand_percentage: %s, crop_faces: %s"
+            )
+            % (
+                len(images),
+                self.crop_faces,
+                self.expand_percentage,
+                self.crop_faces,
+            ),
+        )
 
         result: list[FaceDetectionResult] = []
 
+        log_ctx.info("feeding images to face detector...")
         predictions = self.face_detector(images)
+        log_ctx.info("finished feeding images to face detector")
+
+        log_ctx.info("start post-processing...")
         for j in range(len(predictions)):
             pred = predictions[j]
             boxes = pred.boxes
+
+            log_ctx.info("%d boxes detected for image %d" % (len(boxes), j))
 
             face_det = FaceDetectionResult(
                 **pred.model_dump(),
@@ -83,5 +110,7 @@ class FaceAnalysisService:
             face_det.boxes = boxes
 
             result.append(face_det)
+
+        log_ctx.info("finished post-processing. Completed face detection.")
 
         return result

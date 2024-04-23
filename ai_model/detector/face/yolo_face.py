@@ -12,9 +12,14 @@ logger = get_logger()
 
 class YOLOFace(BaseDetector):
     def __init__(self):
-        logger.info("Loading YOLO Face model")
+        self.log_ctx = logger.bind(name="yolov8_face")
+
+        self.log_ctx.info(
+            "load model YOLOv8-Face with weights %s..."
+            % (YOLOFaceConfig.WeightsPath.value),
+        )
         self.model = YOLO(str(YOLOFaceConfig.WeightsPath.value))
-        logger.info("Loaded YOLO Face model")
+        self.log_ctx.info("finished loading model")
 
     def __call__(
         self,
@@ -28,7 +33,14 @@ class YOLOFace(BaseDetector):
     ) -> list[DetectionResult]:
         result: list[DetectionResult] = []
 
+        self.log_ctx.info(
+            "performing prediction for %d images..." % len(images),
+        )
         predictions = self.model(images)
+        self.log_ctx.info("finished prediction")
+
+        # convert predictions
+        self.log_ctx.info("converting predictions...")
         for pred in predictions:
             cls_ids = pred.boxes.cls.cpu().detach().numpy().tolist()
             confs = pred.boxes.conf.cpu().detach().numpy().tolist()
@@ -60,5 +72,6 @@ class YOLOFace(BaseDetector):
                     orin_image=pred.orig_img,
                 ),
             )
+        self.log_ctx.info("finished converting predictions")
 
         return result

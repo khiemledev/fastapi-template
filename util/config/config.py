@@ -25,3 +25,5 @@ class LoggerConfig(str, Enum):
     BackTrace = False
     MaxBytes = 10485760  # 10MB ~ 10485760
     MaxBackupCount = 10
+    SerializeJSON = True
+    Diagnose = False  # This should be disabled in production
