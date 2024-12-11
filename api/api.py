@@ -8,9 +8,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from constant.app import Mode
+from config import AppConfig
 from schema.api import APIResponse
-from util.config.config import Config
 from util.logger import get_logger, setup_logger
 
 dotenv.load_dotenv()
@@ -22,7 +21,7 @@ logger = get_logger()
 async def lifespan(app: FastAPI):
     # Startup
     logger.info("Starting up")
-    logger.info("Start application in %s mode" % str(Config.Mode.value))
+    logger.info("Start application in %s mode" % str(AppConfig().Mode))
 
     yield
     # Shutdown
@@ -32,13 +31,10 @@ async def lifespan(app: FastAPI):
 def setup_app() -> FastAPI:
     app = FastAPI()
 
+    is_dev = AppConfig().Mode == "DEVELOPMENT"
     app = FastAPI(
-        docs_url=Config.SwaggerURL.value
-        if Config.Mode == Mode.DEVELOPMENT
-        else None,
-        redoc_url=Config.ReDocURL.value
-        if Config.Mode == Mode.DEVELOPMENT
-        else None,
+        docs_url=AppConfig().SwaggerURL if is_dev else None,
+        redoc_url=AppConfig().ReDocURL if is_dev else None,
         lifespan=lifespan,
     )
 

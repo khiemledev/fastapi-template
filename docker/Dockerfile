@@ -1,30 +1,32 @@
-# FROM python:3.12.2
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04 as build
+# FROM python:3.12.2 as build
+# FROM nvidia/cuda:12.4.1-devel-ubuntu22.04 as build
 
-ENV DEBIAN_FRONTEND=noninteractive
+# ENV DEBIAN_FRONTEND=noninteractive
 
-WORKDIR /tmp
+# WORKDIR /tmp
 
-# Install python
-RUN apt update && apt install -y \
-    build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev \
-    libssl-dev libreadline-dev libffi-dev wget
+# # Install python
+# RUN apt update && apt install -y \
+#     build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev \
+#     libssl-dev libreadline-dev libffi-dev wget
 
-# Download different versions here https://www.python.org/downloads/source/
-RUN wget https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz
+# # Download different versions here https://www.python.org/downloads/source/
+# RUN wget https://www.python.org/ftp/python/3.12.2/Python-3.12.2.tgz
 
-RUN tar -xf Python-3.12.2.tgz
+# RUN tar -xf Python-3.12.2.tgz
 
-WORKDIR /tmp/Python-3.12.2
+# WORKDIR /tmp/Python-3.12.2
 
-RUN ./configure --enable-optimizations
+# RUN ./configure --enable-optimizations
 
-RUN make install
+# RUN make install
 
-RUN python3 --version
+# RUN python3 --version
 
 
-FROM build as app
+# FROM build as app
+
+FROM python:3.12.2 as runtime
 
 WORKDIR /app
 

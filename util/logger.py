@@ -4,7 +4,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from .config.config import LoggerConfig
+from config import LoggerConfig
 
 
 def get_logger():
@@ -14,11 +14,11 @@ def get_logger():
 
 def setup_logger(
     name: str = "app",
-    logdir: Path | str = Path(LoggerConfig.LogDir.value),
+    logdir: Path | str = Path(LoggerConfig().LogDir),
     log_level: int = logging.INFO,
-    backtrace: bool = LoggerConfig.BackTrace.value,
-    serialize: bool = LoggerConfig.SerializeJSON.value,
-    diagnose: bool = LoggerConfig.Diagnose.value,
+    backtrace: bool = LoggerConfig().BackTrace,
+    serialize: bool = LoggerConfig().SerializeJSON,
+    diagnose: bool = LoggerConfig().Diagnose,
 ):
     """Setup a logger with file and stream handlers.
 
@@ -53,15 +53,17 @@ def setup_logger(
         level=log_level,
         backtrace=backtrace,
         diagnose=diagnose,
+        enqueue=True,
     )
 
     logger.add(
         path.with_suffix(".log"),
         level=log_level,
-        rotation=int(LoggerConfig.MaxBytes.value),
-        retention=int(LoggerConfig.MaxBackupCount.value),
+        rotation=int(LoggerConfig().MaxBytes),
+        retention=int(LoggerConfig().MaxBackupCount),
         backtrace=backtrace,
         diagnose=diagnose,
+        enqueue=True,
         serialize=serialize,  # Enable this to log in json format
     )
 

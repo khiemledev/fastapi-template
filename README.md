@@ -1,6 +1,6 @@
-# eKYC Core API
+# FastAPI Template
 
-![Pre-commit](https://github.com/khiemledev/golang-api-template/actions/workflows/pre-commit.yaml/badge.svg)
+![Pre-commit](https://github.com/khiemledev/fastapi-template/actions/workflows/pre-commit.yaml/badge.svg)
 
 ## Quick start
 
