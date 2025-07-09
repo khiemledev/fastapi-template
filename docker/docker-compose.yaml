@@ -9,7 +9,7 @@ services:
     volumes:
       - ./.env:/app/.env
     ports:
-      - '8080:8080' # Change 8080 to your port
+      - '8080:80' # Change 8080 to your port
     env_file:
       - ./.env
 
